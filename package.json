@@ -1,0 +1,15 @@
+{
+  "name": "ecommerce_qa_project",
+  "version": "1.0.0",
+  "description": "Contenu du ZIP: - frontend/: simple frontend HTML/JS qui consomme FakeStoreAPI - cypress/: configuration et scripts Cypress (E2E) - postman_collection.json: collection pour tester les endpoints FakeStoreAPI - Plan_de_test.md: plan de test - Cas_de_test.xlsx: table de cas de test - Rapport_QA.md: modèle de rapport - README.md: ce fichier",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^13.6.3"
+  }
+}

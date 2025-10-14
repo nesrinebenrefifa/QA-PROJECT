@@ -1,0 +1,129 @@
+{
+  "info": {
+    "name": "Mini Shop Demo - API Tests",
+    "_postman_id": "12345-67890-fakestore",
+    "description": "Tests API pour FakeStore (produits, panier)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET - Liste des produits",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://fakestoreapi.com/products",
+          "protocol": "https",
+          "host": ["fakestoreapi", "com"],
+          "path": ["products"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Réponse 200 OK', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Contient des produits', function () {",
+              "  var data = pm.response.json();",
+              "  pm.expect(data.length).to.be.above(0);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "POST - Créer un panier",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": 1,\n  \"date\": \"2025-10-14\",\n  \"products\": [{ \"productId\": 1, \"quantity\": 2 }]\n}"
+        },
+        "url": {
+          "raw": "https://fakestoreapi.com/carts",
+          "protocol": "https",
+          "host": ["fakestoreapi", "com"],
+          "path": ["carts"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Vérifie le statut",
+              "pm.test('Création réussie (201 ou 200)', function () {",
+              "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});",
+              "",
+              "// Sauvegarde un ID de panier (si présent) ou un ID par défaut",
+              "var json = pm.response.json();",
+              "if (json && json.id) {",
+              "  pm.environment.set('cartId', json.id);",
+              "} else {",
+              "  console.warn('Pas d\\'ID retourné, utilisation d\\'un ID par défaut 11');",
+              "  pm.environment.set('cartId', 11);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+   {
+  "name": "GET - Récupérer le panier créé",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "https://fakestoreapi.com/carts/{{cartId}}",
+      "protocol": "https",
+      "host": ["fakestoreapi", "com"],
+      "path": ["carts", "{{cartId}}"]
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "exec": [
+          "pm.test('Récupération panier OK', function () {",
+          "  pm.response.to.have.status(200);",
+          "});",
+          "",
+          "var data;",
+          "try {",
+          "  data = pm.response.json();",
+          "} catch (e) {",
+          "  console.error('Réponse non JSON :', pm.response.text());",
+          "  data = null;",
+          "}",
+          "",
+          "var cartId = parseInt(pm.environment.get('cartId'));",
+          "",
+          "pm.test(\"Le panier correspond à l'ID stocké\", function () {",
+          "  pm.expect(data).to.be.an('object');",
+          "  if (data && data.id !== undefined && data.id !== null) {",
+          "    pm.expect(data.id).to.eql(cartId);",
+          "  } else {",
+          "    console.warn('⚠️ Le champ data.id est manquant dans la réponse :', data);",
+          "    pm.expect.fail('Champ id manquant dans la réponse');",
+          "  }",
+          "});"
+        ],
+        "type": "text/javascript"
+      }
+    }
+  ]
+}
+
+    
+  ]
+}
